@@ -9,15 +9,20 @@ TCPMessengerServer::TCPMessengerServer(){
 	isRunning = false;
 	dispatcher = NULL;
 
-	run();
+	this->start();
 }
 
 
 void TCPMessengerServer::run(){
+	// Init dispatcher
+	dispatcher = new TCPMsnDispatcher(this);
+	dispatcher->start();
+
 	isRunning = true;
 	TCPSocket* peerSocket;
 	string peerUsername;
 	string peerPassword;
+
 	// While the server is running
 	while (isRunning){
 		// Get a connection from a peer
@@ -27,34 +32,40 @@ void TCPMessengerServer::run(){
 		if (peerSocket != NULL) {
 			dispatcher->addPeer(peerSocket);
 			//openedPeers[peerSocket->destIpAndPort()] = peerSocket;
+			cout << "Connected to: " << peerSocket->fromAddr() << endl;
 		}
 	}
 }
 
 void TCPMessengerServer::close(){
-	//TODO: close the server
 	cout << "closing server" << endl;
+
+	dispatcher->close();
+
+	// Disconnect all opened peers
+	tOpenedPeers::iterator peersIterator;
+	tOpenedPeers::iterator peersEnd = dispatcher->openedPeers.end();
+
+	for (peersIterator = dispatcher->openedPeers.begin();
+		 peersIterator != peersEnd; peersIterator++){
+		cout << "Closing: " << peersIterator->second << endl;
+		peersIterator->second->cclose();
+	}
+
+	// Disconnect all busyPeers
+
+	dispatcher->waitForThread();
+	peersEnd = dispatcher->busyPeers.end();
+
+	for (peersIterator = dispatcher->busyPeers.begin();
+		 peersIterator != peersEnd; peersIterator++){
+		cout << "Closing: " << peersIterator->second << endl;
+		peersIterator->second->cclose();
+	}
 
 	isRunning = false;
 	tcpSocket->cclose();
-
-	//TODO: Disconnect users
-
-	// Disconnect peers
-	tOpenedPeers::iterator peersIterator = dispatcher->openedPeers.begin();
-	tOpenedPeers::iterator peersEnd = dispatcher->openedPeers.end();
-
-	for (; peersIterator != peersEnd; peersIterator++){
-		(*peersIterator).second->cclose();
-	}
-
 	dispatcher->waitForThread();
-	peersIterator = dispatcher->openedPeers.begin();
-	peersEnd = dispatcher->openedPeers.end();
-
-	for (; peersIterator != peersEnd; peersIterator++){
-		delete (*peersIterator).second;
-	}
 
 	cout << "server closed" << endl;
 }
@@ -89,6 +100,52 @@ void TCPMessengerServer::sendDataToPeer(TCPSocket* peer, string msg){
 }
 
 void TCPMessengerServer::listPeers(){
-	//TODO: print the connected peers
+	tOpenedPeers::iterator iter;
+
+	cout << "Peers list: " << endl;
+
+	for (iter = this->dispatcher->openedPeers.begin();
+		 iter != this->dispatcher->openedPeers.end(); iter++){
+		string add = iter->first;
+
+		cout << add << endl;
+	}
+
 }
 
+
+/***********************   Dispatcher implementation ******************************/
+
+TCPMsnDispatcher::TCPMsnDispatcher(TCPMessengerServer *mesgr){
+	//this->openedPeers = new tOpenedPeers();
+	//this->busyPeers = new tOpenedPeers();
+	this->messenger = mesgr;
+}
+
+void TCPMsnDispatcher::run(){
+	this->isRunning = true;
+	vector<TCPSocket*>* openedPeersSockets = new vector<TCPSocket*>();
+
+	int cmd = -1;
+	tOpenedPeers::iterator peerIter;
+
+	while (this->isRunning){
+		for (peerIter = this->openedPeers.begin();
+				peerIter != this->openedPeers.end();
+				peerIter++){
+			openedPeersSockets->push_back(peerIter->second);
+		}
+
+
+	}
+
+}
+
+void TCPMsnDispatcher::close(){
+	// TODO: Stop the dispatcher
+}
+
+void TCPMsnDispatcher::addPeer(TCPSocket* peerSocket){
+	// TODO: Add peer
+
+}

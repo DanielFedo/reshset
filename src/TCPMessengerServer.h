@@ -26,6 +26,7 @@ class TCPMessengerServer;
  */
 class TCPMsnDispatcher: public MThread{
 	TCPMessengerServer* messenger;
+	bool isRunning;
 
 public:
 	tOpenedPeers openedPeers;
@@ -42,9 +43,14 @@ public:
 	 * The Dispatcher main loop
 	 */
 	void run();
+
+	/**
+	 * End the dispatcher main loop
+	 */
+	void close();
 };
 
-class TCPMessengerServer{
+class TCPMessengerServer: public MThread{
 	//TODO: add class properties
 	TCPSocket* tcpSocket;
 	TCPMsnDispatcher* dispatcher;

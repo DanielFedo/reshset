@@ -40,7 +40,7 @@
 									<listOptionValue builtIn="false" value="msockets64"/>
 								</option>
 								<option id="gnu.cpp.link.option.paths.2060164319" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/msocketsLib}&quot;"/>
+									<listOptionValue builtIn="false" value="/home/user/workspace/msocketsLib"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1127717068" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

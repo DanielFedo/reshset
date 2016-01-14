@@ -7,18 +7,21 @@ CPP_SRCS += \
 ../src/MThread.cpp \
 ../src/TCPMessengerServer.cpp \
 ../src/TCPSocket.cpp \
+../src/TCPSocketsListener.cpp \
 ../src/main.cpp 
 
 OBJS += \
 ./src/MThread.o \
 ./src/TCPMessengerServer.o \
 ./src/TCPSocket.o \
+./src/TCPSocketsListener.o \
 ./src/main.o 
 
 CPP_DEPS += \
 ./src/MThread.d \
 ./src/TCPMessengerServer.d \
 ./src/TCPSocket.d \
+./src/TCPSocketsListener.d \
 ./src/main.d 
 
 
