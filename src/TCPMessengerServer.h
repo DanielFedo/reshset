@@ -15,46 +15,24 @@
 #include <set>
 #include "MThread.h"
 #include "TCPSocket.h"
+#include "Broker.h"
+#include "TCPSocketsListener.h"
+#include "TCPMsnDispatcher.h"
 
 using namespace std;
-typedef map<string, TCPSocket*> tOpenedPeers;
+typedef map<string, TCPSocket*> peersMap;
 
 class TCPMessengerServer;
 
-/**
- * The dispatcher server reads incoming commands from open peers and performs the required operations
- */
-class TCPMsnDispatcher: public MThread{
-	TCPMessengerServer* messenger;
-	bool isRunning;
 
-public:
-	tOpenedPeers openedPeers;
-	tOpenedPeers busyPeers;
-
-	/**
-	 * constructor that receive a reference to the parent messenger server
-	 */
-	TCPMsnDispatcher(TCPMessengerServer* mesgr);
-
-	void addPeer(TCPSocket *peerSocket);
-
-	/**
-	 * The Dispatcher main loop
-	 */
-	void run();
-
-	/**
-	 * End the dispatcher main loop
-	 */
-	void close();
-};
 
 class TCPMessengerServer: public MThread{
 	//TODO: add class properties
 	TCPSocket* tcpSocket;
 	TCPMsnDispatcher* dispatcher;
 	bool isRunning;
+	peersMap openPeers;
+	peersMap busyPeers;
 
 public:
 	/**

@@ -25,7 +25,7 @@ using namespace std;
 class TCPSocket{
 	struct sockaddr_in serverAddr;
 	struct sockaddr_in peerAddr;
-	int socket_fd;
+
 
 private:
 	/**
@@ -34,6 +34,8 @@ private:
 	TCPSocket(int connected_sock,struct sockaddr_in serverAddr,struct sockaddr_in peerAddr);
 
 public:
+	int socket_fd;
+
 	/**
 	 * Constructor create a TCP server socket
 	 */

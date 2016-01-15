@@ -15,7 +15,7 @@ TCPMessengerServer::TCPMessengerServer(){
 
 void TCPMessengerServer::run(){
 	// Init dispatcher
-	dispatcher = new TCPMsnDispatcher(this);
+	dispatcher = new TCPMsnDispatcher(&openPeers, &busyPeers);
 	dispatcher->start();
 
 	isRunning = true;
@@ -43,10 +43,10 @@ void TCPMessengerServer::close(){
 	dispatcher->close();
 
 	// Disconnect all opened peers
-	tOpenedPeers::iterator peersIterator;
-	tOpenedPeers::iterator peersEnd = dispatcher->openedPeers.end();
+	peersMap::iterator peersIterator;
+	peersMap::iterator peersEnd = this->openPeers.end();
 
-	for (peersIterator = dispatcher->openedPeers.begin();
+	for (peersIterator = this->openPeers.begin();
 		 peersIterator != peersEnd; peersIterator++){
 		cout << "Closing: " << peersIterator->second << endl;
 		peersIterator->second->cclose();
@@ -55,9 +55,9 @@ void TCPMessengerServer::close(){
 	// Disconnect all busyPeers
 
 	dispatcher->waitForThread();
-	peersEnd = dispatcher->busyPeers.end();
+	peersEnd = this->busyPeers.end();
 
-	for (peersIterator = dispatcher->busyPeers.begin();
+	for (peersIterator = this->busyPeers.begin();
 		 peersIterator != peersEnd; peersIterator++){
 		cout << "Closing: " << peersIterator->second << endl;
 		peersIterator->second->cclose();
@@ -100,12 +100,12 @@ void TCPMessengerServer::sendDataToPeer(TCPSocket* peer, string msg){
 }
 
 void TCPMessengerServer::listPeers(){
-	tOpenedPeers::iterator iter;
+	peersMap::iterator iter;
 
 	cout << "Peers list: " << endl;
 
-	for (iter = this->dispatcher->openedPeers.begin();
-		 iter != this->dispatcher->openedPeers.end(); iter++){
+	for (iter = this->openPeers.begin();
+		 iter != this->openPeers.end(); iter++){
 		string add = iter->first;
 
 		cout << add << endl;
@@ -114,38 +114,3 @@ void TCPMessengerServer::listPeers(){
 }
 
 
-/***********************   Dispatcher implementation ******************************/
-
-TCPMsnDispatcher::TCPMsnDispatcher(TCPMessengerServer *mesgr){
-	//this->openedPeers = new tOpenedPeers();
-	//this->busyPeers = new tOpenedPeers();
-	this->messenger = mesgr;
-}
-
-void TCPMsnDispatcher::run(){
-	this->isRunning = true;
-	vector<TCPSocket*>* openedPeersSockets = new vector<TCPSocket*>();
-
-	int cmd = -1;
-	tOpenedPeers::iterator peerIter;
-
-	while (this->isRunning){
-		for (peerIter = this->openedPeers.begin();
-				peerIter != this->openedPeers.end();
-				peerIter++){
-			openedPeersSockets->push_back(peerIter->second);
-		}
-
-
-	}
-
-}
-
-void TCPMsnDispatcher::close(){
-	// TODO: Stop the dispatcher
-}
-
-void TCPMsnDispatcher::addPeer(TCPSocket* peerSocket){
-	// TODO: Add peer
-
-}
