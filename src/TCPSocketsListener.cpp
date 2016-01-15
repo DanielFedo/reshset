@@ -17,6 +17,10 @@ void TCPSocketsListener::initSocketsList(vector<TCPSocket *> socketVec){
 	this->sockets = socketVec;
 }
 
+TCPSocketsListener::~TCPSocketsListener(){
+	//TODO:
+}
+
 TCPSocket* TCPSocketsListener::listenToSocket(int timeout){
 	struct timeval tv = {timeout, 0};
 	tSockets::iterator socketsIter;

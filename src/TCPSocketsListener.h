@@ -20,7 +20,6 @@ private:
 	tSockets sockets;
 
 public:
-	TCPSocketsListener();
 	virtual ~TCPSocketsListener();
 
 	/*
